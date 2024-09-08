@@ -1,6 +1,5 @@
 package com.example.beercatalogservice;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.stream.Stream;
 
@@ -25,16 +25,20 @@ public class BeerCatalogServiceApplication {
 }
 
 @Data
-@AllArgsConstructor
 @Entity
 class Beer {
 
+    // JPA requires a no-argument constructor
+    public Beer() {
+    }
+
+    // Constructor with the name field
     public Beer(String name) {
         this.name = name;
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Added generation strategy
     private Long id;
 
     private String name;
@@ -54,9 +58,9 @@ class BeerInitializer implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Stream.of("Kentucky Brunch Brand Stout", "Good Morning", "Very Hazy", "King Julius",
-                "Budweiser", "Coors Light", "PBR")
+                        "Budweiser", "Coors Light", "PBR")
                 .forEach(beer -> beerRepository.save(new Beer(beer)));
 
         beerRepository.findAll().forEach(System.out::println);

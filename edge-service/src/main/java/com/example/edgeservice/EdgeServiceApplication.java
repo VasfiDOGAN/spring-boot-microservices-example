@@ -9,7 +9,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,21 +23,21 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 public class EdgeServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(EdgeServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EdgeServiceApplication.class, args);
+    }
 }
 
 @Data
 class Beer {
-	private String name;
+    private String name;
 }
 
 @FeignClient("beer-catalog-service")
 interface BeerClient {
 
     @GetMapping("/beers")
-    Resources<Beer> readBeers();
+    CollectionModel<Beer> readBeers();
 }
 
 @RestController
