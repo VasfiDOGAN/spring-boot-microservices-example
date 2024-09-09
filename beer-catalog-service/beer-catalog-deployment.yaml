@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beer-catalog-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: beer-catalog
+  template:
+    metadata:
+      labels:
+        app: beer-catalog
+    spec:
+      containers:
+        - name: beer-catalog
+          image: beer-catalog-service:1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://eureka-service:8761/eureka/  # Point to Eureka service inside Kubernetes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: beer-catalog-service
+spec:
+  type: NodePort
+  selector:
+    app: beer-catalog
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30001
